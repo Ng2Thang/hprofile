@@ -1,8 +1,15 @@
 name: Hprofile Actions
-on: workflow_dispatch
+
+# Fixed: Structured the 'on' trigger to respond to pushes to the 'main' branch.
+on:
+  push:
+    branches:
+      - main
+
+# Fixed: Separated 'jobs' into its own top-level section.
 jobs:
   Testing:
-    runs-on: ubuntu-latest # Corrected line
+    runs-on: ubuntu-latest
     steps:
       - name: Testing workflow
         run: echo "Workflow works!"
