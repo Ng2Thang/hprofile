@@ -5,7 +5,6 @@ on:
   push:
     branches:
       - main
-      - workflow_dispatch
 
 # Fixed: Separated 'jobs' into its own top-level section.
 jobs:
