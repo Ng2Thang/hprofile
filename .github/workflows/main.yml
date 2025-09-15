@@ -20,13 +20,6 @@ jobs:
           java-version: 17
           distribution: 'zulu'
 
-      - name: Cache SonarQube packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
-
       - name: Cache Maven packages
         uses: actions/cache@v4
         with:
@@ -41,10 +34,12 @@ jobs:
         run: |
           mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
             -Dsonar.projectKey=ng2thang_hprofile \
-            -Dsonar.working.directory=.sonar # <-- ADD THIS LINE
+            -Dsonar.working.directory=.sonar # Correctly creates the output in the .sonar directory
 
       - name: SonarQube Quality Gate Check 🚦
         uses: sonarsource/sonarqube-quality-gate-action@master
+        # The 'with:' block is removed. The action will automatically find the
+        # report-task.txt file inside the .sonar directory.
         timeout-minutes: 5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
