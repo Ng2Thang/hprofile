@@ -34,3 +34,10 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=ng2thang_hprofile
+      - name: SonarQube Quality Gate Check 🚦
+        uses: sonarsource/sonarqube-quality-gate-action@master
+        # This action will poll SonarQube until the analysis is complete
+        # and fail the job if the Quality Gate is not 'PASSED'.
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
