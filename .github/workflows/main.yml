@@ -1,34 +1,36 @@
-name: Hprofile Actions
+name: SonarQube
 on:
   push:
     branches:
-      - main
+      - master
+  pull_request:
+    types: [opened, synchronize, reopened]
 jobs:
-  build-and-scan:
-    name: Build and Analyze
+  build:
+    name: Build and analyze
     runs-on: ubuntu-latest
     steps:
-      - name: Code checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Required for SonarQube to correctly track new code
-
-      - name: Set up JDK 11
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          java-version: '11'
-          distribution: 'temurin'
-          cache: 'maven' # Cache Maven dependencies to speed up future runs
-
-      - name: Analyze with SonarScanner for Maven
-        # This single command builds, tests, and runs the SonarQube analysis.
-        run: mvn -B verify sonar:sonar \
-          -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
-          -Dsonar.host.url=${{ secrets.SONAR_URL }} \
-          -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }} \
-          -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
+          java-version: 17
+          distribution: 'zulu' # Alternative distribution options are available.
+      - name: Cache SonarQube packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      - name: Build and analyze
         env:
-          # Pass the token securely as an environment variable
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          # GITHUB_TOKEN is required for pull request decoration (optional)
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=ng2thang_hprofile
