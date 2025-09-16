@@ -1,5 +1,11 @@
 name: Hprofile Actions
-on: master
+on:
+  push:
+    branches:
+      - main # Adjust to your main branch name, e.g., master
+  pull_request:
+    types: [opened, synchronize, reopened]
+
 jobs:
   Testing:
     runs-on: ubuntu-latest
