@@ -9,7 +9,7 @@
 
 # 1. Login to SonarCloud.io using your GitHub account
 
-# 2. Import your project on SonarCloud
+# 2. Import your project on SonarCloud 
 #     * Add your GitHub organization first, then add your repository as a new project.
 #     * Please note that many languages are eligible for automatic analysis,
 #       which means that the analysis will start automatically without the need to set up GitHub Actions.
